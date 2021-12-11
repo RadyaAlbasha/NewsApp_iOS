@@ -47,12 +47,17 @@ class OnboardingViewController: UIViewController {
     }
 
     @IBAction func didPressContinue(_ sender: UIButton) {
-        UserDefaults.standard.set(true, forKey: CachingConstants.SetupCompleted.rawValue)
+        saveData()
         let storyBoard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let homeViewController = storyBoard.instantiateViewController(withIdentifier: "HomeViewController") as! HomeViewController
         homeViewController.favoriteCategories = favoriteCategories
         homeViewController.selectedCountry = selectedCountry
         self.navigationController?.pushViewController(homeViewController, animated: false)
+    }
+    func saveData(){
+        onboardingViewModel.setupCompleted()
+        onboardingViewModel.saveFavoriteCategories(favoriteCategories: favoriteCategories)
+        onboardingViewModel.saveSelectedCountry(country: selectedCountry)
     }
 
 }

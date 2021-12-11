@@ -39,6 +39,7 @@
 		85DFFA612764C565002EC69B /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85DFFA602764C565002EC69B /* Utils.swift */; };
 		85DFFA632764FC65002EC69B /* UserDefaultsExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85DFFA622764FC65002EC69B /* UserDefaultsExtension.swift */; };
 		85DFFA6527652EB3002EC69B /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85DFFA6427652EB2002EC69B /* StringExtension.swift */; };
+		85DFFA6927655F0D002EC69B /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85DFFA6827655F0D002EC69B /* UIViewControllerExtension.swift */; };
 		B14B55AA032BAFA90B43BFC9 /* Pods_News.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A5311EC350792AA6E19B9AE /* Pods_News.framework */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +80,7 @@
 		85DFFA602764C565002EC69B /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		85DFFA622764FC65002EC69B /* UserDefaultsExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsExtension.swift; sourceTree = "<group>"; };
 		85DFFA6427652EB2002EC69B /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
+		85DFFA6827655F0D002EC69B /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
 		DA351EE2C862C26F79C9FB20 /* Pods-News.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-News.release.xcconfig"; path = "Target Support Files/Pods-News/Pods-News.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -195,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				85DFFA3527639C2C002EC69B /* TableViewExtension.swift */,
+				85DFFA6827655F0D002EC69B /* UIViewControllerExtension.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -410,6 +413,7 @@
 				85DFFA2927637BF8002EC69B /* CachingConstants.swift in Sources */,
 				85DFFA2F27638098002EC69B /* HomeViewModel.swift in Sources */,
 				85DFFA0D2762BC0C002EC69B /* SceneDelegate.swift in Sources */,
+				85DFFA6927655F0D002EC69B /* UIViewControllerExtension.swift in Sources */,
 				85DFFA5B2764B165002EC69B /* HeadlineTableViewCell.swift in Sources */,
 				85DFFA632764FC65002EC69B /* UserDefaultsExtension.swift in Sources */,
 				85DFFA3C27639D0A002EC69B /* NibLoadableViewProtocol.swift in Sources */,

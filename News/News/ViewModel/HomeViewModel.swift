@@ -105,6 +105,12 @@ class HomeViewModel{
     func getSavedArticles()-> [String:[ArticleModel]]?{
         return UserDefaults.standard.object([String:[ArticleModel]].self, with: CachingConstants.savedArticles.rawValue)
     }
+    func getSavedSelectedCountry()->String?{
+        return UserDefaults.standard.string(forKey: CachingConstants.selectedCountry.rawValue)
+    }
+    func getSavedFavoriteCategories()->[String]?{
+        return UserDefaults.standard.array(forKey: CachingConstants.favoriteCategories.rawValue) as? [String]
+    }
     func cacheData(){
         UserDefaults.standard.set(Date(), forKey: CachingConstants.lastLoadDate.rawValue)
         if !self.topHeadlines.isEmpty{

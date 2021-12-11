@@ -41,6 +41,12 @@ class HomeViewController: UIViewController {
         titleLabel.text = "Top headlines from \(selectedCountry.uppercased())"
         setupLoader()
         setupViewModel()
+        if selectedCountry.isEmpty{
+            selectedCountry = homeViewModel.getSavedSelectedCountry() ?? ""
+        }
+        if favoriteCategories.isEmpty{
+            favoriteCategories = homeViewModel.getSavedFavoriteCategories() ?? []
+        }
         self.hideKeyboardWhenTappedAround()
     }
     
@@ -112,14 +118,6 @@ class HomeViewController: UIViewController {
             guard let self = self else{return}
             self.activityView?.stopAnimating()
         }
-    }
-    
-    /// Method is used to display alert controller view when an error occurs
-    /// - Parameter errorMessage: printed error message
-    func showErrorMessage(errorMessage: String) {
-        let alertController = UIAlertController(title: "Error", message: errorMessage, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
-        self.present(alertController, animated: true, completion: nil)
     }
     
     /// method is called before controller object deleted from memory to cancel all subscribtions
@@ -210,16 +208,5 @@ extension HomeViewController : UISearchBarDelegate{
         DispatchQueue.main.async {[weak self] in
             self?.headlinesTV.reloadData()
         }
-    }
-}
-extension HomeViewController {
-    func hideKeyboardWhenTappedAround() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
-    }
-    
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
     }
 }

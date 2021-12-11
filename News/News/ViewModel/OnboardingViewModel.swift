@@ -25,4 +25,13 @@ class OnboardingViewModel{
     func getAllCatigories()-> [String]{
         return HelpersData.categories
     }
+    func saveSelectedCountry(country: String){
+        UserDefaults.standard.set(country, forKey: CachingConstants.selectedCountry.rawValue)
+    }
+    func saveFavoriteCategories(favoriteCategories: [String]){
+        UserDefaults.standard.set(favoriteCategories, forKey: CachingConstants.favoriteCategories.rawValue)
+    }
+    func setupCompleted(){
+        UserDefaults.standard.set(true, forKey: CachingConstants.SetupCompleted.rawValue)
+    }
 }

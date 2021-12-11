@@ -50,6 +50,9 @@ class DetailsViewController: UIViewController {
             if let artcileURL = self?.articleModel?.url{
                 if let url = URL(string: artcileURL) {// open safari with article URL.
                     UIApplication.shared.open(url)
+                }else{
+                    //invalid url
+                    self?.showErrorMessage(errorMessage: "Invalid URL")
                 }
             }
         }

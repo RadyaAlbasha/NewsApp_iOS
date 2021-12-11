@@ -8,4 +8,6 @@
 import Foundation
 enum CachingConstants : String{
     case SetupCompleted = "SetupCompleted"
+    case lastLoadDate = "lastLoadDate"
+    case savedArticles = "savedArticles"
 }

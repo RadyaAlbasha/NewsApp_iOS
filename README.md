@@ -7,4 +7,4 @@ when user choose his country, and his favorite categories. Onboarding screen wil
 
 headlines will load when lunch app after one hour or when pull to refresh
 
-load more button will showen to load more head lins for a specific category
+load more button will showen to load more headlins for a specific category

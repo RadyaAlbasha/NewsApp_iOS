@@ -13,8 +13,10 @@ class NetworkManager: NetworkManagerContract{
     /// method is used to hit api call and returns result whether with failure or sucess
     /// - Parameters:
     ///   - completion: completion handler thet returns result whether with failure or sucess
-    func getTopHeadlines(countryName:String,category:String,completion: @escaping (Result<NewsModel?,ErrorMessage>) -> Void){
-        let requestUrl = NetworkConstants.baseNewsUrl+NetworkConstants.Routes.topHeadLines+NetworkConstants.Routes.country+countryName+NetworkConstants.Routes.category+category+NetworkConstants.apiKey
+    func getTopHeadlines(countryName:String,category:String,page:Int = 1,completion: @escaping (Result<NewsModel?,ErrorMessage>) -> Void){
+        let pageStr = String(page)
+        let routes = NetworkConstants.Routes.topHeadLines+NetworkConstants.Routes.country+countryName + NetworkConstants.Routes.category+category + NetworkConstants.Routes.page+pageStr
+        let requestUrl = NetworkConstants.baseNewsUrl+routes+NetworkConstants.apiKey
         
         let url = URL(string: requestUrl)
         guard let newURL = url else {
@@ -44,6 +46,7 @@ class NetworkManager: NetworkManagerContract{
                     return
                 }
                 responseObject.category = category
+                responseObject.page = page
                 completion(.success(responseObject))
             }
         }.resume()

@@ -26,7 +26,6 @@ class HomeViewController: UIViewController {
     private var cancellables: Set<AnyCancellable> = []
     /// activity indicator view object
     private var activityView:UIActivityIndicatorView!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -72,13 +71,27 @@ class HomeViewController: UIViewController {
                 self.refreshControl.endRefreshing()
                 self.refresh = false
             }
+            DispatchQueue.main.async {[weak self] in
+                self?.headlinesTV.reloadData()
+            }
         }.store(in: &cancellables)
         
         homeViewModel.errorSubject.sink {[weak self] (message) in
             guard let self = self else{return}
             self.showErrorMessage(errorMessage: message)
         }.store(in: &cancellables)
-        homeViewModel.setupTopHeadlines()
+        
+        homeViewModel.loadMoreSubject.sink {[weak self] (headerModel) in
+            guard let self = self else{return}
+           //show or hide load more btn
+            headerModel.isEnabled = true
+            self.homeViewModel.loadMore[headerModel.category] = headerModel
+            DispatchQueue.main.async {[weak self] in
+                self?.headlinesTV.reloadData()
+            }
+            
+        }.store(in: &cancellables)
+        homeViewModel.setup()
         setupRefreshController()
     }
     func setupLoader(){
@@ -103,6 +116,8 @@ class HomeViewController: UIViewController {
     */
     func configureTableViewNib() {
         headlinesTV.register(HeadlineTableViewCell.self)
+        let headerNib = UINib(nibName: "HeadlineTableHeaderView", bundle: Bundle(for: HomeViewController.self))
+        headlinesTV.register(headerNib, forHeaderFooterViewReuseIdentifier: "HeadlineTableHeaderView")
     }
     /// Show activity indicator view
     func showLoading() {
@@ -141,7 +156,9 @@ extension HomeViewController : UITableViewDelegate, UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
         return favoriteCategories.count
     }
-
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 45
+    }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filteredHeadlines[favoriteCategories[section]]?.count ?? 0
     }
@@ -166,38 +183,32 @@ extension HomeViewController : UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView()
-        view.backgroundColor = UIColor(named: "LightOily")
-        let titleLabel = UILabel()
-        titleLabel.frame = CGRect(x: 11, y: 12, width:170, height: 18)
-        titleLabel.text = favoriteCategories[section]
-        titleLabel.textColor = UIColor(named: "AccentColor")
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 16)
         
-        let button = UIButton(type: .system)
-        button.backgroundColor = UIColor(named: "BaseColor")
-        button.setTitle("Load more", for: .normal)
-        button.setTitleColor(UIColor(named: "AccentColor"), for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-        button.frame = CGRect(x: 303, y: 14, width: 50, height: 25)
-        button.addTarget(self, action: #selector(loadMore(sender:)), for: .touchUpInside)
-        view.addSubview(titleLabel)
-        view.addSubview(button)
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
-        let buttonHorizontalConstraint = NSLayoutConstraint(item: view, attribute: NSLayoutConstraint.Attribute.trailing, relatedBy: NSLayoutConstraint.Relation.equal, toItem: button, attribute: NSLayoutConstraint.Attribute.trailing, multiplier: 1, constant: 5)
-        let buttonVerticalConstraint = NSLayoutConstraint(item:view, attribute: NSLayoutConstraint.Attribute.centerY, relatedBy: NSLayoutConstraint.Relation.equal, toItem: button, attribute: NSLayoutConstraint.Attribute.centerY, multiplier: 1, constant: 0)
-        let titleLabelVerticalConstraint = NSLayoutConstraint(item: titleLabel, attribute: NSLayoutConstraint.Attribute.centerY, relatedBy: NSLayoutConstraint.Relation.equal, toItem: view, attribute: NSLayoutConstraint.Attribute.centerY, multiplier: 1, constant: 0)
-        let titleLabelBtnHorizontalConstraint = NSLayoutConstraint(item: button, attribute: NSLayoutConstraint.Attribute.leading, relatedBy: NSLayoutConstraint.Relation.greaterThanOrEqual, toItem: titleLabel, attribute: NSLayoutConstraint.Attribute.trailing, multiplier: 1, constant: 0)
-        
-        view.addConstraints([buttonHorizontalConstraint, buttonVerticalConstraint, titleLabelVerticalConstraint, titleLabelBtnHorizontalConstraint])
-        
-        
-        return view
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HeadlineTableHeaderView") as! HeadlineTableHeaderView
+        headerView.titleLabel.text = favoriteCategories[section]
+        if self.homeViewModel.loadMore[favoriteCategories[section]]?.loadMore == true{
+            headerView.loadMoreButton.isHidden = false
+            headerView.loadMoreLabel.isHidden = false
+        }else{
+            headerView.loadMoreButton.isHidden = true
+            headerView.loadMoreLabel.isHidden = true
+        }
+        if self.homeViewModel.loadMore[favoriteCategories[section]]?.isEnabled == true{
+            headerView.loadMoreButton.isEnabled = true
+        }
+       
+        headerView.loadMoreButton.tag = section
+        headerView.loadMoreButton.addTarget(self, action: #selector(loadMore(sender:)), for: .touchUpInside)
+        return headerView
     }
 
     @objc func loadMore(sender:UIButton){
-        print("button tapped")
+        print("loadMore button tapped \(sender.tag)")
+        sender.isEnabled = false
+        let category = favoriteCategories[sender.tag]
+        homeViewModel.loadMore[category]?.isEnabled = false
+        let page = homeViewModel.page[category] ?? 1
+        homeViewModel.fetchTopHeadlines(countryName: selectedCountry, category: category, page:page)
     }
 }
 

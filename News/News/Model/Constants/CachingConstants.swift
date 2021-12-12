@@ -12,4 +12,6 @@ enum CachingConstants : String{
     case savedArticles = "savedArticles"
     case selectedCountry = "selectedCountry"
     case favoriteCategories = "favoriteCategories"
+    case page = "page"
+    case loadMore = "loadMore"
 }

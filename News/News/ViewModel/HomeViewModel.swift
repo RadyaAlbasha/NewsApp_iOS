@@ -22,10 +22,24 @@ class HomeViewModel{
 
     /// passthrough subject to emit loading state
     var loadingSubject = PassthroughSubject<Bool,Never>()
+    
+    /// passthrough subject to emit if headlines header
+    var loadMoreSubject = PassthroughSubject<HeadlineTableViewHeaderModel,Never>()
 
     var topHeadlines: [String:[ArticleModel]] = [:]{
         didSet{
             self.dataSubject.send(topHeadlines)
+        }
+    }
+    //[category:pageNumber]
+    var page: [String:Int] = [:]{
+        didSet{
+            savePage(page: page)
+        }
+    }
+    var loadMore : [String: HeadlineTableViewHeaderModel] = [:]{
+        didSet{
+            saveLoadMore(loadMore: loadMore)
         }
     }
     
@@ -35,17 +49,43 @@ class HomeViewModel{
         self.networkManager = networkManager
     }
     
-    func setupTopHeadlines(){
-        topHeadlines = getSavedArticles() ?? [:]
+    func setup(){
+        if let page = getSavedPage(){
+            self.page = page
+        }
+        if let loadMore = getSavedLoadMore(){
+            self.loadMore = loadMore
+        }
+        if let topHeadlines = getSavedArticles(){
+            self.topHeadlines = topHeadlines
+        }
     }
-    func fetchTopHeadlines(countryName:String,category:String){
+    func resetPage(favoriteCategories: [String]){
+        favoriteCategories.forEach { category in
+            page[category] = 1
+        }
+    }
+    func increaseCategoryPage(category: String){
+        if page[category] != nil{//keyExists
+            page[category]! += 1
+        }else{
+            page[category] = 1
+        }
+    }
+    func fetchTopHeadlines(countryName:String,category:String, page:Int){
         loadingSubject.send(true)
-        networkManager.getTopHeadlines(countryName: countryName, category: category) {[weak self] (result) in
+        networkManager.getTopHeadlines(countryName: countryName, category: category, page: page) {[weak self] (result) in
             switch result{
             case .success(let news):
                 self?.loadingSubject.send(false)
-                if let category = news?.category{
-                    self?.topHeadlines[category] = news?.articles ?? []
+                guard let news = news else{return}
+                if let category = news.category{
+                    if let newsPage = news.page, newsPage > 1,  self?.topHeadlines[category] != nil{
+                        self?.topHeadlines[category]?.append(contentsOf: news.articles ?? [])
+                    }else{
+                        self?.topHeadlines[category] = news.articles ?? []
+                    }
+                    self?.handleLoadMore(news:news)
                 }
                 self?.cacheData()
             case .failure(let error):
@@ -53,21 +93,44 @@ class HomeViewModel{
                 self?.errorSubject.send(error.rawValue)
             }
         }
+        increaseCategoryPage(category: category)
+    }
+    func handleLoadMore(news: NewsModel){
+        if let category = news.category{
+            if (news.totalResults ?? 0) > (self.topHeadlines[category]?.count ?? 0){
+                //show load more btn
+                self.loadMoreSubject.send(HeadlineTableViewHeaderModel(category: category, loadMore: true))
+            }else{
+                //hide load more btn
+                self.loadMoreSubject.send(HeadlineTableViewHeaderModel(category: category, loadMore: false))
+            }
+        }
     }
     func getArticles(countryName: String, favoriteCategories: [String],refresh:Bool = false){
-        var hours = 1 // lastCallNumberOfHours
-        if let date = UserDefaults.standard.object(forKey:CachingConstants.lastLoadDate.rawValue) as? Date, let totalHours = Calendar.current.dateComponents([.hour], from: date, to: Date()).hour{
-            hours = totalHours //the number of hours that have passed since the last call
-        }
-        
-        let articles = getSavedArticles() ?? [:]
-        
-        if hours >= 1 || articles.isEmpty || refresh{
-            favoriteCategories.forEach { category in
-                fetchTopHeadlines(countryName: countryName , category: category)
-            }
+        if refresh{
+            fetchTopHeadlinesForAllCatigories(countryName: countryName, favoriteCategories: favoriteCategories)
         }else{
-            topHeadlines = articles
+            var hours = 1 // lastCallNumberOfHours
+            if let date = UserDefaults.standard.object(forKey:CachingConstants.lastLoadDate.rawValue) as? Date, let totalHours = Calendar.current.dateComponents([.hour], from: date, to: Date()).hour{
+                hours = totalHours //the number of hours that have passed since the last call
+            }
+            
+            let articles = getSavedArticles() ?? [:]
+            
+            if hours >= 1 || articles.isEmpty{
+                fetchTopHeadlinesForAllCatigories(countryName: countryName, favoriteCategories: favoriteCategories)
+            }else{
+                topHeadlines = articles
+                // page = saved page
+                page = getSavedPage() ?? [:]
+            }
+        }
+    }
+    private func fetchTopHeadlinesForAllCatigories(countryName: String, favoriteCategories: [String]){
+        //reset page
+        resetPage(favoriteCategories: favoriteCategories)
+        favoriteCategories.forEach { category in
+            fetchTopHeadlines(countryName: countryName , category: category, page: 1)
         }
     }
     func filterHeadlines(searchText: String) -> [String:[ArticleModel]]{
@@ -104,6 +167,18 @@ class HomeViewModel{
     }
     func getSavedArticles()-> [String:[ArticleModel]]?{
         return UserDefaults.standard.object([String:[ArticleModel]].self, with: CachingConstants.savedArticles.rawValue)
+    }
+    func savePage(page:[String:Int]){
+        UserDefaults.standard.set(object: page, forKey:CachingConstants.page.rawValue)
+    }
+    func getSavedPage()-> [String:Int]?{
+        return UserDefaults.standard.object([String:Int].self, with: CachingConstants.page.rawValue)
+    }
+    func saveLoadMore(loadMore:[String: HeadlineTableViewHeaderModel]){
+        UserDefaults.standard.set(object: loadMore, forKey:CachingConstants.loadMore.rawValue)
+    }
+    func getSavedLoadMore()-> [String: HeadlineTableViewHeaderModel]?{
+        return UserDefaults.standard.object([String: HeadlineTableViewHeaderModel].self, with: CachingConstants.loadMore.rawValue)
     }
     func getSavedSelectedCountry()->String?{
         return UserDefaults.standard.string(forKey: CachingConstants.selectedCountry.rawValue)

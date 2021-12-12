@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="sf_pro_text_semibold.ttf">
+            <string>SFProText-Semibold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" restorationIdentifier="HeadlineTableHeaderView" id="iN0-l3-epB" customClass="HeadlineTableHeaderView" customModule="News" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qLV-aL-Vha">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HDe-Te-2tn">
+                            <rect key="frame" x="332" y="0.0" width="70" height="44"/>
+                            <fontDescription key="fontDescription" name="SFProText-Semibold" family="SF Pro Text" pointSize="14"/>
+                            <state key="normal">
+                                <color key="titleColor" name="1_28_100"/>
+                            </state>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nSL-tA-oZd">
+                            <rect key="frame" x="12" y="12" width="0.0" height="0.0"/>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                            <color key="textColor" name="AccentColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lode More" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NXM-Yd-pdy">
+                            <rect key="frame" x="332" y="17" width="70" height="17"/>
+                            <color key="backgroundColor" name="BaseColor"/>
+                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                            <color key="textColor" name="AccentColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" name="LightOily"/>
+                    <constraints>
+                        <constraint firstItem="HDe-Te-2tn" firstAttribute="width" secondItem="NXM-Yd-pdy" secondAttribute="width" id="4Dr-rW-742"/>
+                        <constraint firstItem="HDe-Te-2tn" firstAttribute="centerY" secondItem="qLV-aL-Vha" secondAttribute="centerY" id="6hO-5T-qcy"/>
+                        <constraint firstItem="nSL-tA-oZd" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="NXM-Yd-pdy" secondAttribute="leading" constant="-8" id="BV8-qh-49x"/>
+                        <constraint firstItem="NXM-Yd-pdy" firstAttribute="top" secondItem="qLV-aL-Vha" secondAttribute="top" constant="17" id="Q4x-lk-Heo"/>
+                        <constraint firstAttribute="trailing" secondItem="NXM-Yd-pdy" secondAttribute="trailing" constant="12" id="TMk-XA-zkd"/>
+                        <constraint firstAttribute="height" secondItem="HDe-Te-2tn" secondAttribute="height" id="UiA-c1-7il"/>
+                        <constraint firstAttribute="trailing" secondItem="HDe-Te-2tn" secondAttribute="trailing" constant="12" id="ZB6-Iv-gbU"/>
+                        <constraint firstItem="nSL-tA-oZd" firstAttribute="top" secondItem="qLV-aL-Vha" secondAttribute="top" constant="12" id="nqJ-5V-ncy"/>
+                        <constraint firstItem="nSL-tA-oZd" firstAttribute="leading" secondItem="qLV-aL-Vha" secondAttribute="leading" constant="12" id="twR-i3-2No"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="qLV-aL-Vha" secondAttribute="trailing" id="7gR-P3-Chg"/>
+                <constraint firstAttribute="bottom" secondItem="qLV-aL-Vha" secondAttribute="bottom" id="rNM-hb-SlG"/>
+                <constraint firstItem="qLV-aL-Vha" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="wMe-0U-HPN"/>
+                <constraint firstItem="qLV-aL-Vha" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="xvO-XI-fAd"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="loadMoreButton" destination="HDe-Te-2tn" id="4Qd-Wk-PaM"/>
+                <outlet property="loadMoreLabel" destination="NXM-Yd-pdy" id="NQQ-j9-rhV"/>
+                <outlet property="titleLabel" destination="nSL-tA-oZd" id="ZkP-Z4-xVc"/>
+            </connections>
+            <point key="canvasLocation" x="139" y="88"/>
+        </view>
+    </objects>
+    <resources>
+        <namedColor name="1_28_100">
+            <color red="0.32899999618530273" green="0.32400000095367432" blue="0.4779999852180481" alpha="0.33000001311302185" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="AccentColor">
+            <color red="0.87400001287460327" green="0.87999999523162842" blue="0.77600002288818359" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="BaseColor">
+            <color red="0.41100001335144043" green="0.3970000147819519" blue="0.35699999332427979" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+        <namedColor name="LightOily">
+            <color red="0.53700000047683716" green="0.58499997854232788" blue="0.49900001287460327" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+        </namedColor>
+    </resources>
+</document>
